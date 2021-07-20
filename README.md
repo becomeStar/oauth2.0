@@ -27,9 +27,9 @@
  ### OAuth2.0 클라이언트가 되기 위한 네개의 단계
  
  1. 클라이언트 애플리케이션 등록
- 2. 액세스 토큰 얻기
- 3. 액세스 토큰을 이용해서 보호된 리소스에 접근
- 4. 액세스 토큰 갱신
+ 2. access token 얻기
+ 3. access token 을 이용해서 보호된 리소스에 접근
+ 4. access token 갱신
      
  #### 클라이언트 애플리케이션 등록 과정
  
@@ -43,7 +43,7 @@
  - 페이스북 개발자 페이지 (https://developers.facebook.com)
     1. 애플리케이션 생성(client id, client secret 결정)
         - ![create_application](image/create_application.png)
-    2. 리다이렉트(redirect) 엔드포인트 설정 (redirect endpoint의 화이트리스트 결정)
+    2. 리다이렉트 엔드포인트 설정 (리다이렉트 엔드포인트의 화이트리스트 결정)
         - ![redirect_endpoint](image/redirect_endpoint.png)
     3. 인가 엔드포인트와 토큰 엔드포인트 설정(서비스 제공자가 문서로 제공)
         - 페이스북 인가 엔드포인트(https://www.facebook.com/v11.0/dialog/oauth)
@@ -55,6 +55,7 @@
   - 인가 코드 그랜트(authorization code grant) 플로우(=서버사이드 플로우) 
     - GoodApp 클라이언트 애플리케이션이 Facebook 서비스 제공자의 친구 목록에 인가 요청을 하는 경우   
     - ![authorization_grant_flow](image/authorization_grant_flow.png)
+    <br/><br/>
     
     1. 인가 요청
        ```
@@ -71,8 +72,9 @@
       - client_id(필수) : 애플리케이션의 고유한 client id
       - redirect_uri(선택) : 서비스 제공자가 인가 요청에 대한 응답을 전달하기 위해 사용되는 리다이렉션 엔드포인트
       - scope (선택) : 요청하는 접근 범위를 나타낸다
-      - state(권장) : 옵션이지만 사용하는 것이 좋다. CSRF 공격을 막을 수 있다
-    
+      - state(권장) : 옵션이지만 사용하는 것이 좋다. CSRF 공격을 막을 수 있다  
+    <br/><br/>
+      
     2. 인가 응답 
      - 인가 요청 URL에 질의를 보내면 사용자는 사용자 동의화면을 보게 되고, 사용자는 인가 요청에 동의하거나 거절할 수 있다
         - 만약 동의하면 그에 대한 응답으로 액세스 토큰과 교환할 수 있는 인가 코드(authorization code)가 전달된다
@@ -100,7 +102,7 @@
                         error_description=[ERROR_DESCRIPTION]&
                         error_uri=[ERROR_URI]&
                         state=[STATE]     
-            ```
+            
          - error(필수) : 에러 코드로서 인가 요청이 실패한 경우를 나타냄. 다음 값 중 하나여야 함
             - invalid_request : 요청 데이터가 잘못돼서 처리할 수 없음
             - unauthorized_client : 클라이언트 애플리케이션이 요청을 전달할 권한이 없음 
@@ -124,9 +126,9 @@
            Content-Type: application/x-www-form-urlencoded
          
            grant_type=authorization_code&
-                      code=[AUTHORIZATION_CODE]&
-                      redirect_uri=[REDIRECT_URI]&
-                      client_id=[CLIENT_ID]
+           code=[AUTHORIZATION_CODE]&
+           redirect_uri=[REDIRECT_URI]&
+           client_id=[CLIENT_ID]
                        
          ```
      - grant_type(필수) : 액세스 토큰으로 교환되고자 한다는 것을 나타내기 위해 authorization_code로 세팅돼야 한다
@@ -211,9 +213,21 @@
    - 리프레시 토큰을 사용하면 사용자의 세션이 유지되고 매끄러운 사용자 경험을 제공할 수 있다
    
 #### state 파라미터로 CSRF 공격 방지하기
- 
 
+  - 공격 원리
+    ![csrf](image/csrf.png) 
+    1. 공격자는 미리 자신의 인가 코드(malicious_code)를 얻어 놓는다(user-agent에서 인가 코드를 얻은 직후 인가 플로우를 중지한다) 
+    2. 공격자는 공격용 website를 만들고 html의 img 태그의 src 속성에 공격용 website 주소를 넣는다
+    3. 희생자는 공격용 website를 클릭하고 자신도 모르게 희생자의 user-agent가 redirect 응답을 받는다.
+    4. redirect로 인해 공격자의 인가 코드로 access token 발급 요청이 이뤄진다
+    5. 최종적으로 희생자는 공격자의 access token을 받게 된다.
+    6. 이후에 희생자가 리소스 서버의 api 를 호출할 때 공격자의 access token를 사용하면 자신의 데이터를 공격자의 계정에 올리게 되는 보안 위협이 생길 수 있다
+  
+  - state 파라미터로 방어하는 방법 
+    - 희생자가 access token 요청을 보내기 전에 state 파라미터를 확인해서 자신의 state가 아니면 access token 요청을 보내지 않는다
+    
+    
 
 #### 참고 자료 
- - OAuth 2.0 마스터
- - 
+ - [OAuth 2.0 마스터 (OAuth 2.0 애플리케이션 개발을 위한 모든 것), 에이콘(찰스 비히스)](http://www.yes24.com/Product/goods/38100766)
+ - [CSRF 공격 방지 원리](https://stackoverflow.com/questions/35985551/how-does-csrf-work-without-state-parameter-in-oauth2-0)
