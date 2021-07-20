@@ -154,7 +154,8 @@
         - error(필수) : 에러 코드로서 요청이 실패한 이유를 나타낸다. 다음의 값 중 하나
             - invalid_request : 잘못된 액세스 토큰 요청(필요한 파라미터가 빠졌거나 지원하지 않는 파라미터 값 포함)
             - invalid_client : 클라이언트 인증 실패(등록되지 않은 클라이언트, 액세스 토큰 요청에 클라이언트 인증이 포함되지 않은 경우)
-            - invalid_grant : 인가 요청에서 사용된 리다이렉션 URI와 동일한 URI가 사용되지 않은 경우
+            - invalid_grant : 인가 코드나 리프레시 토큰이 만료되거나 폐기된 경우, 
+                              인가 요청에서 사용된 리다이렉션 URI와 동일한 URI가 사용되지 않은 경우
             - unauthorized_client : 인증된 클라이언트가 인가 코드 그랜트를 사용할 권한이 없음 
             - unsupported_grant_type : 인가 서버가 지원하지 않는 그랜트 유형을 사용 
             - invalid_scope : 요청된 접근 권한 범위가 잘못됐거나 사용자가 허락한 범위를 넘어서는 경우
@@ -163,8 +164,56 @@
 
 #### 액세스 토큰 이용하기  
   - API를 호출할 때 액세스 토큰을 전달하는 방법에는 3가지가 있다
-    - authorization header 에 담아서 전달
-    - HTTP POST 방식으로 Body에 담아서 전달
-    - URI QUERY STRING으로 전달
+    - authorization header 에 담아서 전달 (가장 권장되는 방식)
+        ```
+           GET /resource HTTP/1.1
+           Host: server.example.com
+           Authorization: Bearer mF_9.B5f-4.1JqM     
+        ```
+    - HTTP POST 방식으로 Body에 담아서 전달 (authorization header 사용이 불가능할 때 사용)
+       ```
+          POST /resource HTTP/1.1
+          Host: server.example.com
+          Content-Type: application/x-www-form-urlencoded
+      
+          access-token=mF_9.B5f-4.1JqM      
+        ```
+    - URI QUERY STRING으로 전달(테스트와 디버깅 용도로 사용)
+        ```
+           GET /resource?access_token=mF_9.B5f-4.1JqM HTTP/1.1
+           Host: server.example.com 
+        ```
+#### 액세스 토큰 갱신하기
+   - 액세스 토큰은 제한 시간이 지나면 만료되고, 만료되면 다시 갱신해야 한다 
+   - 리프레시 토큰(refresh token) 을 이용해 access token 을 갱신하는 플로우
+    - 선택 사항. 서비스 제공자가 리프레시 토큰 워크플로우를 지원하지 않을수도 있다 
+     
+    
+   - 리프레시 요청 
+     ```
+       POST /token HTTP/1.1
+       Host: server.example.com
+       Authorization: Basic [ENCODED_CLIENT_CREDENTIALS]
+       Content-Type : application/x-www-form-urlencoded
+     
+       grant_type=refresh_token&refresh_token=[REFRESH_TOKEN]
+     ```
+     - grant_type (필수) : 리프레시 토큰을 이용해 새로운 액세스 토큰을 요청한다는 것을 나타내기 위해 "refresh token" 으로 고정 해야한다
+     - refresh_token (필수) : 리프레시 토큰 값 
+     - scope(선택) : 새로 요청하는 액세스 토큰 접근 권한 범위가 기존 액세스 토큰과 동일하다면 생략 가능.
+                    기존 액세스 토큰의 접근 권한 범위보다 작은 범위의 액세스 토큰을 요청할 수 있다.
+                    원래의 액세스 토큰보다 더 큰 접근 범위를 요청할 수는 없다 
+   
+   - 리프레시 응답 포맷은 액세스 토큰 응답과 동일
+
+   - 리프레시 토큰의 유효 기간(며칠~몇 주)은 액세스 토큰의 유효 기간(몇분~몇시간)보다 길다
+   - 리프레시 토큰이 만료된 경우 인가 프로세스를 처음부터 다시 시작해야 한다
+   - 리프레시 토큰을 사용하면 사용자의 세션이 유지되고 매끄러운 사용자 경험을 제공할 수 있다
+   
+#### state 파라미터로 CSRF 공격 방지하기
  
-        
+
+
+#### 참고 자료 
+ - OAuth 2.0 마스터
+ - 
