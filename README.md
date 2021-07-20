@@ -55,7 +55,7 @@
   - 인가 코드 그랜트(authorization code grant) 플로우(=서버사이드 플로우) 
     - GoodApp 클라이언트 애플리케이션이 Facebook 서비스 제공자의 친구 목록에 인가 요청을 하는 경우   
     - ![authorization_grant_flow](image/authorization_grant_flow.png)
-    <br/><br/>
+    <br/><br/><br/>
     
     1. 인가 요청
        ```
@@ -73,7 +73,7 @@
       - redirect_uri(선택) : 서비스 제공자가 인가 요청에 대한 응답을 전달하기 위해 사용되는 리다이렉션 엔드포인트
       - scope (선택) : 요청하는 접근 범위를 나타낸다
       - state(권장) : 옵션이지만 사용하는 것이 좋다. CSRF 공격을 막을 수 있다  
-    <br/><br/>
+    <br/>
       
     2. 인가 응답 
      - 인가 요청 URL에 질의를 보내면 사용자는 사용자 동의화면을 보게 되고, 사용자는 인가 요청에 동의하거나 거절할 수 있다
@@ -107,7 +107,7 @@
             - invalid_request : 요청 데이터가 잘못돼서 처리할 수 없음
             - unauthorized_client : 클라이언트 애플리케이션이 요청을 전달할 권한이 없음 
             - access_denied : 사용자가 인가 요청을 거부함 
-            - unsupported_response_type : 잘못된 응답 유이 사용됨. (response_type=code 가 아닌 경우)
+            - unsupported_response_type : 잘못된 응답 유형이 사용됨. (response_type=code 가 아닌 경우)
             - invalid_scope : 잘못된 범위가 사용됨
             - server_error : 서버 내에서 에러가 발생해 인가 요청을 제대로 처리할 수 없음 
             - temporarily_unavailable : 인가 서버가 일시적인 장애임 
@@ -116,6 +116,7 @@
          - error_uri(선택) : 에러에 대해 자세한 정보를 담고 있는 웹 문서에 대한 링크
          - state(조건부로 필수) : 인가 요청에도 state 파라미터가 존재하면 요청에 대한 응답에도  
                                state 값이 전달돼야 한다  
+      <br/>                        
 
     3. 액세스 토큰 요청
      - 서비스 제공자의 토큰 엔드포인트로 POST 요청을 보낸다 
@@ -138,10 +139,10 @@
                                   인가 요청 시 사용된 URI와 동일해야 한다
         
      - client_id(필수) : 애플리케이션의 고유한 client id 
-    
      - HTTP basic authentication을 이용해서 클라이언트 애플리케이션을 서비스 제공자에게 인증한다 
         - [ENCODED_CLIENT_CREDENTIALS] = BASE 64 ENCODE([CLIENT_ID]:[CLIENT_SECRET])
-    
+     <br/>
+     
      4. 액세스 토큰 응답 
       - 액세스 토큰 요청이 성공했을 때
         - access_token(필수) : 얻고자 했던 액세스 토큰. 이 토큰을 이용해 사용자의 프로파일이나 글에 접근가능
@@ -164,7 +165,8 @@
         - error_description(선택) : 사람이 읽을 수 있는 형태의 아스키 문자열 메시지로 에러에 대한 추가적인 정보 제공
         - error_uri(선택) : 에러에 대한 자세한 정보를 담고 있는 웹 페이지의 URI 
 
-#### 액세스 토큰 이용하기  
+#### 액세스 토큰 이용
+
   - API를 호출할 때 액세스 토큰을 전달하는 방법에는 3가지가 있다
     - authorization header 에 담아서 전달 (가장 권장되는 방식)
         ```
@@ -185,7 +187,8 @@
            GET /resource?access_token=mF_9.B5f-4.1JqM HTTP/1.1
            Host: server.example.com 
         ```
-#### 액세스 토큰 갱신하기
+#### 액세스 토큰 갱신
+
    - 액세스 토큰은 제한 시간이 지나면 만료되고, 만료되면 다시 갱신해야 한다 
    - 리프레시 토큰(refresh token) 을 이용해 access token 을 갱신하는 플로우
     - 선택 사항. 서비스 제공자가 리프레시 토큰 워크플로우를 지원하지 않을수도 있다 
@@ -212,7 +215,7 @@
    - 리프레시 토큰이 만료된 경우 인가 프로세스를 처음부터 다시 시작해야 한다
    - 리프레시 토큰을 사용하면 사용자의 세션이 유지되고 매끄러운 사용자 경험을 제공할 수 있다
    
-#### state 파라미터로 CSRF 공격 방지하기
+#### state 파라미터로 CSRF 공격 방지
 
   - 공격 원리
     ![csrf](image/csrf.png) 
