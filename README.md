@@ -46,7 +46,7 @@
  - 페이스북 개발자 페이지 (https://developers.facebook.com)
     1. 애플리케이션 생성(client id, client secret 결정)
         - ![create_application](image/create_application.png)
-    2. 리다이렉트 엔드포인트 설정 (리다이렉트 엔드포인트의 화이트리스트 결정)
+    2. 리다이렉트 엔드포인트 설정 (리다이렉트 엔드포인트의 white list 결정)
         - ![redirect_endpoint](image/redirect_endpoint.png)
     3. 인가 엔드포인트와 토큰 엔드포인트 설정(서비스 제공자가 문서로 제공)
         - 페이스북 인가 엔드포인트(https://www.facebook.com/v11.0/dialog/oauth)
@@ -60,6 +60,8 @@
     - ![authorization_grant_flow](image/authorization_grant_flow.png)
     - ![rfc_authorization_code_grant_flow](image/rfc_authorization_code_grant_flow.png)
     <br/><br/><br/>
+      
+  - 액세스 토큰을 얻는 과정
     
     1. 인가 요청
        ```
@@ -216,12 +218,11 @@
      ```
      - grant_type (필수) : 리프레시 토큰을 이용해 새로운 액세스 토큰을 요청한다는 것을 나타내기 위해 "refresh token" 으로 고정 해야한다
      - refresh_token (필수) : 리프레시 토큰 값 
-     - scope(선택) : 새로 요청하는 액세스 토큰 접근 권한 범위가 기존 액세스 토큰과 동일하다면 생략 가능.
-                    기존 액세스 토큰의 접근 권한 범위보다 작은 범위의 액세스 토큰을 요청할 수 있다.
-                    원래의 액세스 토큰보다 더 큰 접근 범위를 요청할 수는 없다 
-   
+     - scope(선택) : 새로 요청하는 액세스 토큰 접근 권한 범위가 기존 액세스 토큰과 동일하다면 생략 가능.  
+                    기존 액세스 토큰의 접근 권한 범위보다 작은 범위의 액세스 토큰을 요청할 수 있다.  
+                    원래의 액세스 토큰보다 더 큰 접근 범위를 요청할 수는 없다   
+   <br/>
    - 리프레시 응답 포맷은 액세스 토큰 응답과 동일
-
    - 리프레시 토큰의 유효 기간(일 단위)은 액세스 토큰의 유효 기간(시간 단위)보다 길다
    - 리프레시 토큰이 만료된 경우 인가 프로세스를 처음부터 다시 시작해야 한다
    - 리프레시 토큰을 사용하면 사용자의 세션이 유지되고 매끄러운 사용자 경험을 제공할 수 있다
