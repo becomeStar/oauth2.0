@@ -106,8 +106,8 @@
                         error_uri=[ERROR_URI]&
                         state=[STATE]
              ```
-            
-            - error(필수) : 에러 코드로서 인가 요청이 실패한 경우를 나타냄. 다음 값 중 하나여야 함
+             
+             - error(필수) : 에러 코드로서 인가 요청이 실패한 경우를 나타냄. 다음 값 중 하나여야 함
                 - invalid_request : 요청 데이터에 필수 파라미터가 빠진 경우
                 - unauthorized_client : 클라이언트 애플리케이션이 access token 요청을 전달할 권한이 없음 
                 - access_denied : 사용자가 인가 요청을 거부함 
@@ -125,8 +125,9 @@
       <br/>                        
 
     3. 액세스 토큰 요청
-     - 서비스 제공자의 토큰 엔드포인트로 POST 요청을 보낸다 
-     -   ```
+        - 서비스 제공자의 토큰 엔드포인트로 POST 요청을 보낸다 
+        -  
+           ```
            POST /token HTTP/1.1
            Host: server.example.com
            Authorization: Basic [ENCODED_CLIENT_CREDENTIALS]
@@ -136,42 +137,42 @@
            code=[AUTHORIZATION_CODE]&
            redirect_uri=[REDIRECT_URI]&
            client_id=[CLIENT_ID]
-                       
-         ```
-         
-        - grant_type(필수) : 액세스 토큰으로 교환되고자 한다는 것을 나타내기 위해 authorization_code로 세팅돼야 한다
-        - code(필수) : 인가 요청에 의해 전달받은 인가 코드 값
-        - redirect_uri(조건부로 필수) : 인가 요청에 redirect_uri가 포함된다면, 
+
+           ```
+    
+            - grant_type(필수) : 액세스 토큰으로 교환되고자 한다는 것을 나타내기 위해 authorization_code로 세팅돼야 한다
+            - code(필수) : 인가 요청에 의해 전달받은 인가 코드 값
+            - redirect_uri(조건부로 필수) : 인가 요청에 redirect_uri가 포함된다면, 
                                   액세스 토큰 요청에도 redirect_uri가 포함돼야 하며,
                                   인가 요청 시 사용된 URI와 동일해야 한다
         
-        - client_id(필수) : 애플리케이션의 고유한 client id 
-        - HTTP basic authentication을 이용해서 클라이언트 애플리케이션을 서비스 제공자에게 인증한다 
-            - [ENCODED_CLIENT_CREDENTIALS] = BASE 64 ENCODE([CLIENT_ID]:[CLIENT_SECRET])
+            - client_id(필수) : 애플리케이션의 고유한 client id 
+            - HTTP basic authentication을 이용해서 클라이언트 애플리케이션을 서비스 제공자에게 인증한다 
+                - [ENCODED_CLIENT_CREDENTIALS] = BASE 64 ENCODE([CLIENT_ID]:[CLIENT_SECRET])
      <br/>
      
      4. 액세스 토큰 응답 
-      - 액세스 토큰 요청이 성공했을 때
-        - access_token(필수) : 얻고자 했던 액세스 토큰. 이 토큰을 이용해 사용자의 프로파일이나 글에 접근가능
-        - token_type(필수) : 전달되는 토큰의 유형. 일반적으로 bearer
-        - expires_in(선택) : 토큰의 유효 기간(초 단위)
-        - refresh_token(선택) : 액세스 토큰이 만료됐을 경우 액세스 토큰을 갱신하기 위해 사용되는 토큰
+            - 액세스 토큰 요청이 성공했을 때
+                - access_token(필수) : 얻고자 했던 액세스 토큰. 이 토큰을 이용해 사용자의 프로파일이나 글에 접근가능
+                - token_type(필수) : 전달되는 토큰의 유형. 일반적으로 bearer
+                - expires_in(선택) : 토큰의 유효 기간(초 단위)
+                - refresh_token(선택) : 액세스 토큰이 만료됐을 경우 액세스 토큰을 갱신하기 위해 사용되는 토큰
                                서비스 제공자에 따라 리프레시 토큰을 지원하지 않는 경우도 있을 수 있다
-        - scope(조건부로 필수) : 인가된 접근 범위와 요청된 범위가 일치한다면 생략.
+                - scope(조건부로 필수) : 인가된 접근 범위와 요청된 범위가 일치한다면 생략.
                               만약 다르다면 인가된 범위가 전달된다
                                
-      - 액세스 토큰 요청이 실패했을 때 
-        - error(필수) : 에러 코드로서 요청이 실패한 이유를 나타낸다. 다음 값 중 하나여야 함
-            - invalid_request : 잘못된 액세스 토큰 요청(필요한 파라미터가 빠진 경우)
-            - invalid_client : 클라이언트 인증 실패(등록되지 않은 클라이언트, 액세스 토큰 요청에 클라이언트 인증이 포함되지 않은 경우)
-            - invalid_grant : 인가 코드나 리프레시 토큰이 만료되거나 폐기된 경우, 
+            - 액세스 토큰 요청이 실패했을 때 
+                - error(필수) : 에러 코드로서 요청이 실패한 이유를 나타낸다. 다음 값 중 하나여야 함
+                    - invalid_request : 잘못된 액세스 토큰 요청(필요한 파라미터가 빠진 경우)
+                    - invalid_client : 클라이언트 인증 실패(등록되지 않은 클라이언트, 액세스 토큰 요청에 클라이언트 인증이 포함되지 않은 경우)
+                    - invalid_grant : 인가 코드나 리프레시 토큰이 만료되거나 폐기된 경우, 
                               인가 요청에서 사용된 리다이렉션 URI와 동일한 URI가 사용되지 않은 경우
-            - unauthorized_client : 인증된 클라이언트가 인가 코드 그랜트를 사용할 권한이 없음 
-            - unsupported_grant_type : 인가 서버가 지원하지 않는 그랜트 유형을 사용 
-            - invalid_scope : 요청된 접근 권한 범위가 잘못됐거나 사용자가 허락한 범위를 넘어서는 경우
+                    - unauthorized_client : 인증된 클라이언트가 인가 코드 그랜트를 사용할 권한이 없음 
+                    - unsupported_grant_type : 인가 서버가 지원하지 않는 그랜트 유형을 사용 
+                    - invalid_scope : 요청된 접근 권한 범위가 잘못됐거나 사용자가 허락한 범위를 넘어서는 경우
             
-        - error_description(선택) : 사람이 읽을 수 있는 형태의 아스키 문자열 메시지로 에러에 대한 추가적인 정보 제공
-        - error_uri(선택) : 에러에 대한 자세한 정보를 담고 있는 웹 페이지의 URI 
+                - error_description(선택) : 사람이 읽을 수 있는 형태의 아스키 문자열 메시지로 에러에 대한 추가적인 정보 제공
+                - error_uri(선택) : 에러에 대한 자세한 정보를 담고 있는 웹 페이지의 URI 
         <br/>
           
 #### 액세스 토큰 이용
@@ -220,11 +221,11 @@
    
    - 리프레시 응답 포맷은 액세스 토큰 응답과 동일
 
-   - 리프레시 토큰의 유효 기간(며칠~몇 주)은 액세스 토큰의 유효 기간(몇분~몇시간)보다 길다
+   - 리프레시 토큰의 유효 기간(일 단위)은 액세스 토큰의 유효 기간(시간 단위)보다 길다
    - 리프레시 토큰이 만료된 경우 인가 프로세스를 처음부터 다시 시작해야 한다
    - 리프레시 토큰을 사용하면 사용자의 세션이 유지되고 매끄러운 사용자 경험을 제공할 수 있다
    
-#### state 파라미터로 CSRF 공격 방지
+### state 파라미터로 CSRF 공격 방지
 
   - 공격 원리
     ![csrf](image/csrf.png) 
@@ -240,7 +241,7 @@
     
     
 
-#### 참고 자료 
+### 참고 자료 
  - [OAuth 2.0 마스터 (OAuth 2.0 애플리케이션 개발을 위한 모든 것), 에이콘(찰스 비히스)](http://www.yes24.com/Product/goods/38100766)
  - [CSRF 공격 방지 원리](https://stackoverflow.com/questions/35985551/how-does-csrf-work-without-state-parameter-in-oauth2-0)
  - [rfc 문서](https://datatracker.ietf.org/doc/html/rfc6749)
