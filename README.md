@@ -46,9 +46,9 @@
  - 페이스북 개발자 페이지 (https://developers.facebook.com)
     1. 애플리케이션 생성(client id, client secret 결정)
         - ![create_application](image/create_application.png)
-    2. 리다이렉트 엔드포인트 설정 (리다이렉트 엔드포인트의 white list 결정)
+    2. 리다이렉트 엔드포인트 white list 설정
         - ![redirect_endpoint](image/redirect_endpoint.png)
-    3. 인가 엔드포인트와 토큰 엔드포인트 설정(서비스 제공자가 문서로 제공)
+    3. 인가 엔드포인트와 토큰 엔드포인트(서비스 제공자가 문서로 제공)
         - 페이스북 인가 엔드포인트(https://www.facebook.com/v11.0/dialog/oauth)
         - 페이스북 토큰 엔드포인트(https://graph.facebook.com/oauth/access_token)
         - https://developers.facebook.com/docs/facebook-login 에 명시되어 있음
